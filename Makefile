@@ -3,14 +3,20 @@ all:
 
 test: all
 	xhost local:dummy
-	docker run -it --init --rm --network=host --env DISPLAY=${DISPLAY} bluesky
+	docker run -it --init --rm \
+		--network=host \
+		--env DISPLAY=${DISPLAY} \
+		--volume ${PWD}/persistent_cache:/bluesky/cache \
+		--volume ${PWD}/src/bluesky:/bluesky \
+		bluesky
 
 clean:
+	docker rmi bluesky
+	rm -f persistent_cache/*
+
+distclean:
 	docker image prune --force
 	docker system prune --force
-
-distclean: clean
-	git submodule deinit --all
 
 _SUBMODULE_CANARY := src/bluesky/requirements-gui.txt
 $(_SUBMODULE_CANARY):

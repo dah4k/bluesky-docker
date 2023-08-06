@@ -1,8 +1,5 @@
 FROM ubuntu:22.04
 
-WORKDIR /src
-COPY src/bluesky /src/bluesky
-
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TZ=Etc/UTC
 RUN apt-get update --quiet=2 --assume-yes --no-install-recommends \
@@ -18,11 +15,9 @@ RUN apt-get update --quiet=2 --assume-yes --no-install-recommends \
     && rm -rf /var/cache/apt/* /var/lib/apt/lists/*
 
 ## See Also https://github.com/TUDelft-CNS-ATM/bluesky/wiki/Installation
-WORKDIR /src/bluesky
-RUN pip install -r requirements-gui.txt
+COPY src/bluesky/requirements-gui.txt /tmp/requirements-gui.txt
+RUN pip install -r /tmp/requirements-gui.txt
 
-## `pip search` is dead garbage, use `pip_search` instead
-RUN pip install pip-search
-
-## WONTFIX: OpenGL.raw.GL import _errors. Fallback to Pygame renderer
+WORKDIR /bluesky
 ENTRYPOINT ["/usr/bin/python3", "BlueSky_pygame.py"]
+CMD ["--scenfile", "/bluesky/scenario/demo.scn"]
