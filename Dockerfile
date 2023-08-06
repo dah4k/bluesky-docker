@@ -11,6 +11,7 @@ RUN apt-get update --quiet=2 --assume-yes --no-install-recommends \
         python3-pip \
         python3-pyside2.qtcore \
         python3-pyside2.qtwidgets \
+        python3-tk \
         mesa-utils \
         x11-apps \
     && apt-get clean \
@@ -23,5 +24,5 @@ RUN pip install -r requirements-gui.txt
 ## `pip search` is dead garbage, use `pip_search` instead
 RUN pip install pip-search
 
-## FIXME: OpenGL.raw.GL import _errors
-#ENTRYPOINT ["/usr/bin/python3", "BlueSky.py"]
+## WONTFIX: OpenGL.raw.GL import _errors. Fallback to Pygame renderer
+ENTRYPOINT ["/usr/bin/python3", "BlueSky_pygame.py"]
