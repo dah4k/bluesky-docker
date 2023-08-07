@@ -2,17 +2,19 @@ all:
 	docker build --file Dockerfile --tag bluesky .
 
 test: all
-	xhost local:dummy
+	xhost +local:dummy
 	docker run -it --init --rm \
 		--network=host \
 		--env DISPLAY=${DISPLAY} \
 		--volume ${PWD}/persistent_cache:/bluesky/cache \
 		--volume ${PWD}/src/bluesky:/bluesky \
 		bluesky
+	xhost -local:dummy
 
 clean:
 	docker rmi bluesky
 	rm -f persistent_cache/*
+	xhost -local:dummy
 
 distclean:
 	docker image prune --force
